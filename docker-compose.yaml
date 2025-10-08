@@ -1,0 +1,119 @@
+services:
+
+# BANCO DE DADOS POSTGRESQL | DBS Criados por SCRIPT
+  hotel_db:
+    image: postgres:16-alpine
+    container_name: hotel_db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres_data/auth:/var/lib/postgresql/data
+      - ./data/postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - hotel_network
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# MICROSERVIÇOS
+
+  # MS-APIGATEWAY
+  ms-apigateway:
+    build:
+      context: .
+      dockerfile: ./ms-apigateway/Dockerfile
+    container_name: ms-apigateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      hotel_db:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - hotel_network
+
+  # MS-AUTHUSER
+  ms-authuser:
+    build:
+      context: .
+      dockerfile: ./ms-authuser/Dockerfile
+    container_name: ms-authuser
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${AUTHUSER_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+    depends_on:
+      hotel_db:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - hotel_network
+
+  # MS-PROPRIEDADE
+  ms-propriedade:
+    build:
+      context: .
+      dockerfile: ./ms-propriedade/Dockerfile
+    container_name: ms-propriedade
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${PROPRIEDADE_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+    depends_on:
+      hotel_db:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - hotel_network
+
+  # MS-RESERVA
+  ms-reserva:
+    build:
+      context: .
+      dockerfile: ./ms-reserva/Dockerfile
+    container_name: ms-reserva
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${RESERVA_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+    depends_on:
+      hotel_db:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - hotel_network
+
+  # MS-NOTIFICACAO
+  ms-notificacao:
+    build:
+      context: .
+      dockerfile: ./ms-notificacao/Dockerfile
+    container_name: ms-notificacao
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${NOTIFICACAO_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+    depends_on:
+      hotel_db:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - hotel_network
+
+networks:
+  hotel_network:
+    driver: bridge
