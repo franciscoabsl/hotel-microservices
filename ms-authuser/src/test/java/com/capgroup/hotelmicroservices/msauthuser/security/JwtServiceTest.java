@@ -1,20 +1,20 @@
-package com.capgroup.hotelmicroservices.msauthuser.security;
-
-import com.capgroup.hotelmicroservices.msauthuser.domain.Perfil;
-import com.capgroup.hotelmicroservices.msauthuser.domain.Usuario;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.junit.jupiter.api.Test;
-
-import javax.crypto.SecretKey;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class JwtServiceTest {
-
+//package com.capgroup.hotelmicroservices.msauthuser.security;
+//
+//import com.capgroup.hotelmicroservices.msauthuser.domain.Perfil;
+//import com.capgroup.hotelmicroservices.msauthuser.domain.Usuario;
+//import io.jsonwebtoken.Claims;
+//import io.jsonwebtoken.Jwts;
+//import io.jsonwebtoken.SignatureAlgorithm;
+//import io.jsonwebtoken.security.Keys;
+//import org.junit.jupiter.api.Test;
+//
+//import javax.crypto.SecretKey;
+//import java.util.UUID;
+//
+//import static org.junit.jupiter.api.Assertions.*;
+//
+//class JwtServiceTest {
+//
 //    @Test
 //    void generateToken_shouldContainExpectedClaims() {
 //        // Secret com 32 bytes (mínimo para HS256)
@@ -48,4 +48,4 @@ class JwtServiceTest {
 //        assertNotNull(claims.getIssuedAt());
 //        assertNotNull(claims.getExpiration());
 //    }
-}
+//}
