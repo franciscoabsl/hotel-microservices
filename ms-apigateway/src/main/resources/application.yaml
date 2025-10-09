@@ -4,3 +4,38 @@ server:
 spring:
   application:
     name: ms-apigateway
+  cloud:
+    gateway:
+      default-filters:
+        - AddRequestHeader=X-Request-Source, ms-apigateway
+      routes:
+        - id: ms-authuser
+          uri: http://localhost:8081
+          predicates:
+            - Path=/users/**
+
+        - id: ms-propriedade
+          uri: http://localhost:8082
+          predicates:
+            - Path=/propriedades/**
+
+        - id: ms-reserva
+          uri: http://localhost:8083
+          predicates:
+            - Path=/reservas/**
+
+        - id: ms-notificacao
+          uri: http://localhost:8084
+          predicates:
+            - Path=/notificacoes/**
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 10s
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
+jwt:
+  secret: minha-chave-secreta-supersegura
