@@ -40,8 +40,3 @@ public class Reserva {
     private String emailProprietario;
 }
 
-public enum ReservaStatusEnum {
-    ATIVA,
-    CANCELADA,
-    CONCLUIDA
-}
