@@ -9,6 +9,12 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: auto
+
   sql:
     init:
       mode: never
@@ -21,3 +27,21 @@ spring:
         format_sql: true
   jackson:
     default-property-inclusion: non_null # Omite campos nulos no JSON de resposta
+
+  mail:
+    host: ${SPRING_MAIL_HOST}
+    port: ${SPRING_MAIL_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls.enable: false
+
+app:
+  rabbitmq:
+    queue:
+      notificacao: reserva.notificacao.queue
+
+    spring:
+      application:
+        name: ms-notificacao
