@@ -50,12 +50,20 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${AUTHUSER_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+      SECURITY_JWT_SECRET: ${SECURITY_JWT_SECRET}
+      SECURITY_JWT_EXPIRATION_SECONDS: 3600
+      SPRING_PROFILES_ACTIVE: dev
     depends_on:
       hotel_db:
         condition: service_healthy
     restart: on-failure
     networks:
       - hotel_network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:8081/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # MS-PROPRIEDADE
   ms-propriedade:

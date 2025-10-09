@@ -21,3 +21,28 @@ spring:
         format_sql: true
   jackson:
     default-property-inclusion: non_null # Omite campos nulos no JSON de resposta
+
+security:
+  jwt:
+    # Substitua por um valor forte em produção (idealmente Base64) e configure via variável de ambiente SECURITY_JWT_SECRET
+    secret: ${SECURITY_JWT_SECRET:change-me-please-change-me-please-change-me-please!}
+    # Validade do token em segundos (ex.: 3600 = 1h). Pode ser alterado via SECURITY_JWT_EXPIRATION_SECONDS
+    expiration-seconds: ${SECURITY_JWT_EXPIRATION_SECONDS:3600}
+
+ 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    db:
+      enabled: true
+ 
