@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,7 +37,6 @@ public class ReservaServiceImpl implements ReservaService {
     private static final String AUTH_CB = "authServiceCB";
     private static final String ROLE_ADMIN = "ADMIN";
 
-    // Injeção via construtor (Lombok @RequiredArgsConstructor ou manual)
     public ReservaServiceImpl(
             ReservaRepository reservaRepository,
             RabbitMQSender rabbitMQSender,
@@ -90,7 +90,7 @@ public class ReservaServiceImpl implements ReservaService {
             return mapToReservaResponseDto(reserva);
         }
 
-        if (existsConflictByQuartoIdExcludingId(reserva.getQuartoId(), reservaId, inputDto.checkIn(), inputDto.checkOut())) {
+        if (existsConflictExcludingCurrent(reserva.getQuartoId(), reservaId, inputDto.checkIn(), inputDto.checkOut())) {
             throw new RecursoNaoDisponivelException("A data de check-out deve ser posterior ao check-in.");
         }
 
@@ -192,18 +192,35 @@ public class ReservaServiceImpl implements ReservaService {
         throw new RecursoNaoDisponivelException("Serviço de Autenticação/Usuário indisponível. Tente novamente mais tarde.");
     }
 
-    // --- LÓGICA DE AGENDAMENTO (EVENTO LEMBRETE) ---
-
-    @Scheduled(cron = "0 0 8 * * *")
+    // --- 4. LÓGICA DE AGENDAMENTO (EVENTO LEMBRETE) ---
+    @Scheduled(cron = "0 0 8 * * *") // Todo dia às 8h
     public void publicarLembretesDiarios() {
         log.info("Executando job de verificação de lembretes diários.");
-        // Implementação: buscar reservas com check-in próximo e enviar o evento LEMBRETE.
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate proximaSemana = hoje.plusDays(7);
+        LocalDate amanha = hoje.plusDays(1);
+
+        // 1. Buscar reservas com check-in em 7 dias
+        List<Reserva> lembretes7Dias = reservaRepository.findByCheckInAndStatusNot(proximaSemana, "CANCELADA");
+        lembretes7Dias.forEach(r -> rabbitMQSender.sendReservaEvent(r, "LEMBRETE"));
+
+        // 2. Buscar reservas com check-in amanhã (1 dia)
+        List<Reserva> lembretes1Dia = reservaRepository.findByCheckInAndStatusNot(amanha, "CANCELADA");
+        lembretes1Dia.forEach(r -> rabbitMQSender.sendReservaEvent(r, "LEMBRETE"));
+
+        log.info("Total de {} lembretes publicados (7 dias + 1 dia).", lembretes7Dias.size() + lembretes1Dia.size());
     }
 
     // --- MÉTODOS AUXILIARES ---
-
-    private  boolean existsConflictByQuartoIdExcludingId(UUID quartoId, UUID reservaId, LocalDate checkIn, LocalDate checkOut) {
-        return  reservaRepository.existsConflictByQuartoIdExcludingId(quartoId, reservaId, checkIn, checkOut);
+    private boolean existsConflictExcludingCurrent(UUID quartoId, UUID reservaId, LocalDate checkIn, LocalDate checkOut) {
+        return reservaRepository.existsByQuartoIdAndIdNotAndCheckInBeforeAndCheckOutAfterAndStatusNot(
+                quartoId,
+                reservaId,
+                checkOut,
+                checkIn,
+                "CANCELADA" // Status fixo
+        );
     }
 
     private ReservaResponseDto mapToReservaResponseDto(Reserva reserva) {
