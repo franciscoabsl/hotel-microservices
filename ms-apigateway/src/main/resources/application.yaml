@@ -13,24 +13,32 @@ spring:
             - AddRequestHeader=X-Request-Source, ms-apigateway
           routes:
             - id: ms-authuser
-              uri: http://localhost:8081
+              uri: http://ms-authuser:8081
               predicates:
-                - Path=/users/**
+                - Path=/auth/**
+                - Path=/usuario/**
 
             - id: ms-propriedade
-              uri: http://localhost:8082
+              uri: http://ms-propriedade:8082
               predicates:
                 - Path=/propriedades/**
 
             - id: ms-reserva
-              uri: http://localhost:8083
+              uri: http://ms-reserva:8083
               predicates:
                 - Path=/reservas/**
 
             - id: ms-notificacao
-              uri: http://localhost:8084
+              uri: http://ms-notificacao:8084
               predicates:
                 - Path=/notificacoes/**
+              filters:
+                # Filtro para proteger o MS-Notificacao de acesso externo
+                - name: RewritePath
+                  args:
+                    regexp: /notificacoes/(?<segment>.*)
+                    replacement: /${segment}
+
           httpclient:
             connect-timeout: 5000
             response-timeout: 10s
@@ -40,5 +48,7 @@ logging:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
 
-jwt:
-  secret: minha-chave-secreta-supersegura
+security:
+  jwt:
+    secret: ${SECURITY_JWT_SECRET:change-me-please-change-me-please-change-me-please!}
+    expiration-seconds: ${SECURITY_JWT_EXPIRATION_SECONDS:3600}
