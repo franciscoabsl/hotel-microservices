@@ -18,12 +18,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-/**
- * Autentica requisições com base nos headers enviados pelo API Gateway.
- * Espera-se que o Gateway valide o JWT e propague:
- * - X-User-ID: UUID do usuário
- * - X-User-Roles: lista separada por vírgula (ex.: "ADMIN" ou "HOSPEDE,PROPRIETARIO")
- */
 @Component
 public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
 
@@ -34,7 +28,6 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Ignorar endpoints públicos de autenticação
         String path = request.getRequestURI();
         if (isPublicAuthEndpoint(request.getMethod(), path)) {
             filterChain.doFilter(request, response);
@@ -44,7 +37,6 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
         String userId = request.getHeader(HEADER_USER_ID);
         String rolesHeader = request.getHeader(HEADER_USER_ROLES);
 
-        // Só autentica se ambos os headers existirem e houver pelo menos uma role válida
         if (userId != null && !userId.isBlank() && rolesHeader != null && !rolesHeader.isBlank()) {
             Collection<? extends GrantedAuthority> authorities = parseAuthorities(rolesHeader);
             if (!authorities.isEmpty()) {

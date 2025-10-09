@@ -24,7 +24,6 @@ public class JwtService {
             @Value("${security.jwt.secret:change-me-please-change-me-please-change-me-please!}") String secret,
             @Value("${security.jwt.expiration-seconds:3600}") long expirationSeconds
     ) {
-        // Aceita secret em texto (UTF-8) ou Base64; força tamanho adequado para HS256
         byte[] keyBytes = isBase64(secret) ? Decoders.BASE64.decode(secret) : secret.getBytes(StandardCharsets.UTF_8);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
         this.expirationSeconds = expirationSeconds;
@@ -50,7 +49,6 @@ public class JwtService {
     }
 
     private boolean isBase64(String value) {
-        // Heurística simples: Base64 costuma ter somente A-Z, a-z, 0-9, +, / e '=' de padding e tamanho múltiplo de 4
         if (value == null || value.isBlank()) return false;
         if ((value.length() % 4) != 0) return false;
         return value.matches("[A-Za-z0-9+/=]+");

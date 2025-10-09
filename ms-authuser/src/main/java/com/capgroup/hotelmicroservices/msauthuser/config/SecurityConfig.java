@@ -29,7 +29,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-        // Swagger/OpenAPI
         .requestMatchers(
             "/v3/api-docs/**",
             "/swagger-ui.html",
@@ -39,7 +38,6 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             );
 
-        // Autenticação a partir dos headers vindos do Gateway (JWT validado no API Gateway)
         http.addFilterBefore(headerAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

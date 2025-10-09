@@ -3,9 +3,6 @@ package com.capgroup.hotelmicroservices.msauthuser.dto;
 import com.capgroup.hotelmicroservices.msauthuser.domain.Perfil;
 import jakarta.validation.constraints.*;
 
-/**
- * DTO de requisição para cadastro de usuário.
- */
 public record AuthRegisterRequest(
         @NotBlank(message = "Nome é obrigatório")
         @Size(max = 120, message = "Nome deve ter no máximo 120 caracteres") String nome,
