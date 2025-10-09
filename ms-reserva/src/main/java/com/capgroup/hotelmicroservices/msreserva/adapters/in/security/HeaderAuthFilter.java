@@ -1,4 +1,4 @@
-package com.capgroup.hotelmicroservices.msreserva.secutiry;
+package com.capgroup.hotelmicroservices.msreserva.adapters.in.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

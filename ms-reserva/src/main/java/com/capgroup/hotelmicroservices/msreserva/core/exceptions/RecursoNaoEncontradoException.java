@@ -1,4 +1,4 @@
-package com.capgroup.hotelmicroservices.msreserva.core.domain.exceptions;
+package com.capgroup.hotelmicroservices.msreserva.core.exceptions;
 
 public class RecursoNaoEncontradoException extends RuntimeException {
 

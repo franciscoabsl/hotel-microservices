@@ -1,4 +1,4 @@
-package com.capgroup.hotelmicroservices.msreserva.secutiry;
+package com.capgroup.hotelmicroservices.msreserva.adapters.in.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

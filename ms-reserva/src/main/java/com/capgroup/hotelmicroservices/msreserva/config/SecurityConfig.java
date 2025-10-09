@@ -1,5 +1,6 @@
-package com.capgroup.hotelmicroservices.msreserva.secutiry;
+package com.capgroup.hotelmicroservices.msreserva.config;
 
+import com.capgroup.hotelmicroservices.msreserva.adapters.in.security.HeaderAuthFilter;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true) // Habilita o @PreAuthorize
 public class SecurityConfig {
 
-    private final HeaderAuthFilter  headerAuthFilter;
+    private final HeaderAuthFilter headerAuthFilter;
 
     public SecurityConfig(HeaderAuthFilter headerAuthFilter) {
         this.headerAuthFilter = headerAuthFilter;
