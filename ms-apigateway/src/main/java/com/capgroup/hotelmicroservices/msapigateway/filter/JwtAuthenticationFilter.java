@@ -14,30 +14,28 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
-    @Value("${jwt.secret}")
+    @Value("${security.jwt.secret}")
     private String secret;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        if (request.getURI().getPath().contains("/user/login") ||
-                request.getURI().getPath().contains("/user/register")) {
+        if (request.getURI().getPath().contains("/auth/login") ||
+                request.getURI().getPath().contains("/auth/register")) {
             return chain.filter(exchange);
         }
 
         if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT ausente");
+            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT ausente"));
         }
 
         String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Formato de token inválido");
+            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Formato de token inválido"));
         }
 
         String token = authHeader.substring(7);
@@ -50,19 +48,16 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
             String userId = claims.getSubject();
 
-            // Extrai múltiplas roles
-            List<String> roles = claims.get("roles", List.class);
-            String roleHeaderValue = String.join(",", roles);
-
+            String roles = claims.get("roles", String.class);
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                     .header("X-User-ID", userId)
-                    .header("X-User-Roles", roleHeaderValue)
+                    .header("X-User-Roles", roles)
                     .build();
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
 
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT inválido");
+            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT inválido ou expirado"));
         }
     }
 
