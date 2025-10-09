@@ -91,6 +91,8 @@ services:
     depends_on:
       hotel_db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: on-failure
     networks:
       - hotel_network
@@ -110,7 +112,39 @@ services:
     depends_on:
       hotel_db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: on-failure
+    networks:
+      - hotel_network
+
+    # ------ RABBITMQ ------
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Porta padrão AMQP
+      - "15672:15672" # Porta para o Management Plugin (UI: http://localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hotel_network
+
+  # ------ MAILHOG SMTP ------
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    platform: linux/amd64
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - hotel_network
 

@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   application:
@@ -20,4 +20,38 @@ spring:
       hibernate:
         format_sql: true
   jackson:
-    default-property-inclusion: non_null # Omite campos nulos no JSON de resposta
+    default-property-inclusion: non_null
+
+  # Configuração do RabbitMQ
+  rabbitmq:
+    exchange:
+      reserva: reserva-exchange
+    host: rabbitmq
+
+# Configurações de Resiliência (Resilience4j)
+resilience4j:
+  circuitbreaker:
+    instances:
+      # Circuit Breaker para chamadas críticas
+      authServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpen-enabled:  true
+      propriedadeServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpen-enabled:  true
+
+app:
+  service:
+    authuser:
+      url: http://ms-authuser:8081/api/authuser
+
+    propriedade:
+        url: http://ms-propriedade:8082/api/propriedade
