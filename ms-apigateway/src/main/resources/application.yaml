@@ -4,3 +4,76 @@ server:
 spring:
   application:
     name: ms-apigateway
+
+  cloud:
+    gateway:
+      #            - id: ms-notificacao
+#              uri: http://ms-notificacao:8084
+#              predicates:
+#                - Path=/notificacoes/**
+#              filters:
+#                # Filtro para proteger o MS-Notificacao de acesso externo
+#                - name: RewritePath
+#                  args:
+#                    regexp: /notificacoes/(?<segment>.*)
+#                    replacement: /${segment}
+
+      server:
+        webflux:
+          default-filters:
+            - AddRequestHeader=X-Request-Source, ms-apigateway
+          httpclient:
+            response-timeout: 10s
+            connect-timeout: 5000
+          routes:
+            - id: ms-authuser-auth
+              uri: http://ms-authuser:8081
+              predicates:
+                - Path=/auth/**
+
+            - id: ms-authuser-usuarios
+              uri: http://ms-authuser:8081
+              predicates:
+                - Path=/usuarios/**
+
+            - id: ms-propriedade-propriedade
+              uri: http://ms-propriedade:8082
+              predicates:
+                - Path=/propriedades/**
+
+            - id: ms-propriedade-quartos
+              uri: http://ms-propriedade:8082
+              predicates:
+                - Path=/quartos/**
+
+            - id: ms-reserva
+              uri: http://ms-reserva:8083
+              predicates:
+                - Path=/reservas/**
+
+
+  # Esta é a lista de microsserviços que o Swagger UI deve exibir
+  springdoc:
+    swagger-ui:
+      urls:
+        - name: ms-authuser
+          url: /v3/api-docs/ms-authuser
+        - name: ms-propriedade
+          url: /v3/api-docs/ms-propriedade
+        - name: ms-reserva
+          url: /v3/api-docs/ms-reserva
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
+security:
+  jwt:
+    secret: ${SECURITY_JWT_SECRET}
+    expiration-seconds: ${SECURITY_JWT_EXPIRATION_SECONDS}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway

@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   application:
@@ -20,4 +20,50 @@ spring:
       hibernate:
         format_sql: true
   jackson:
-    default-property-inclusion: non_null # Omite campos nulos no JSON de resposta
+    default-property-inclusion: non_null
+
+  # Configuração do RabbitMQ
+  rabbitmq:
+    exchange:
+      reserva: reserva-exchange
+    host: rabbitmq
+
+# Configurações de Resiliência (Resilience4j)
+resilience4j:
+  circuitbreaker:
+    instances:
+      # Circuit Breaker para chamadas críticas
+      authServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpen-enabled:  true
+      propriedadeServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpen-enabled:  true
+  retry:
+    instances:
+      authServiceCB:
+        maxAttempts: 3                   # Tenta a chamada no máximo 3 vezes
+        waitDuration: 1s                 # Espera 1 segundo entre as tentativas
+        retryExceptions: # Quais exceções devem disparar o Retry
+          - org.springframework.web.client.ResourceAccessException # Exceção de conexão (Timeout, Host down)
+      propriedadeServiceCB:
+        maxAttempts: 3                   # Tenta a chamada no máximo 3 vezes
+        waitDuration: 1s                 # Espera 1 segundo entre as tentativas
+        retryExceptions:
+          - org.springframework.web.client.ResourceAccessException
+
+app:
+  service:
+    authuser:
+      url: http://ms-authuser:8081/usuarios
+
+    propriedade:
+        url: http://ms-propriedade:8082/propriedades

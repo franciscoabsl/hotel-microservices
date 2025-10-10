@@ -20,4 +20,25 @@ spring:
       hibernate:
         format_sql: true
   jackson:
-    default-property-inclusion: non_null # Omite campos nulos no JSON de resposta
+    default-property-inclusion: non_null
+
+security:
+  jwt:
+    secret: ${SECURITY_JWT_SECRET}
+    expiration-seconds: ${SECURITY_JWT_EXPIRATION_SECONDS}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    db:
+      enabled: true
+ 

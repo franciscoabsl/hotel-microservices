@@ -3,3 +3,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/notificacao_db
     username: username
     password: password
+
+  mail:
+    host: localhost
+    port: 1025

@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ms-apigateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - AddRequestHeader=X-Request-Source, ms-apigateway
+          routes:
+            - id: ms-authuser
+              uri: http://localhost:8081
+              predicates:
+                - Path=/auth/**
+                - Path=/usuario/**
+
+            - id: ms-propriedade
+              uri: http://localhost:8082
+              predicates:
+                - Path=/propriedades/**
+
+            - id: ms-reserva
+              uri: http://localhost:8083
+              predicates:
+                - Path=/reservas/**
+
+            - id: ms-notificacao
+              uri: http://localhost:8084
+              predicates:
+                - Path=/notificacoes/**
+              filters:
+                # Filtro para proteger o MS-Notificacao de acesso externo
+                - name: RewritePath
+                  args:
+                    regexp: /notificacoes/(?<segment>.*)
+                    replacement: /${segment}
+

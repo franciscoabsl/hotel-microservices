@@ -31,6 +31,11 @@ services:
     container_name: ms-apigateway
     ports:
       - "8080:8080"
+      - "5005:5005"
+    environment:
+      SECURITY_JWT_SECRET: ${SECURITY_JWT_SECRET}
+      SECURITY_JWT_EXPIRATION_SECONDS: 3600
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     depends_on:
       hotel_db:
         condition: service_healthy
@@ -46,16 +51,26 @@ services:
     container_name: ms-authuser
     ports:
       - "8081:8081"
+      - "5006:5005"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${AUTHUSER_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+      SECURITY_JWT_SECRET: ${SECURITY_JWT_SECRET}
+      SECURITY_JWT_EXPIRATION_SECONDS: 3600
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     depends_on:
       hotel_db:
         condition: service_healthy
     restart: on-failure
     networks:
       - hotel_network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:8081/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # MS-PROPRIEDADE
   ms-propriedade:
@@ -88,8 +103,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${RESERVA_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${SPRING_RABBITMQ_HOST}
+      SPRING_RABBITMQ_USERNAME: ${SPRING_RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${SPRING_RABBITMQ_PASSWORD}
     depends_on:
       hotel_db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     restart: on-failure
     networks:
@@ -107,10 +127,47 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${NOTIFICACAO_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+      SPRING_RABBITMQ_HOST: ${SPRING_RABBITMQ_HOST}
+      SPRING_RABBITMQ_USERNAME: ${SPRING_RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${SPRING_RABBITMQ_PASSWORD}
     depends_on:
       hotel_db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: on-failure
+    networks:
+      - hotel_network
+
+    # ------ RABBITMQ ------
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Porta padrão AMQP
+      - "15672:15672" # Porta para o Management Plugin (UI: http://localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hotel_network
+
+  # ------ MAILHOG SMTP ------
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    platform: linux/amd64
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - hotel_network
 

@@ -3,3 +3,14 @@ spring:
     url: jdbc:postgresql://localhost:5432/reserva_db
     username: username
     password: password
+
+  # Configuração do RabbitMQ local
+  rabbitmq:
+    host: localhost
+
+#app:
+#  service:
+#    authuser:
+#        url:  http://localhost:8081/api/authuser
+#    propriedade:
+#        url: http://localhost:8082/api/propriedade
