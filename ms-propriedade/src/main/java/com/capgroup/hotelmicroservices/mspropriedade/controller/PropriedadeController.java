@@ -23,7 +23,7 @@ public class PropriedadeController {
 
     @PostMapping
     public ResponseEntity<PropriedadeResponseDTO> criar(@RequestBody PropriedadeRequestDTO dto) {
-        return ResponseEntity.ok(propriedadeService.criar(dto));
+        return ResponseEntity.ok(propriedadeService.create(dto));
     }
 
     @GetMapping
@@ -38,12 +38,12 @@ public class PropriedadeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PropriedadeResponseDTO> atualizar(@PathVariable Long id, @RequestBody PropriedadeRequestDTO dto) {
-        return ResponseEntity.ok(propriedadeService.atualizar(id, dto));
+        return ResponseEntity.ok(propriedadeService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        propriedadeService.deletar(id);
+        propriedadeService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

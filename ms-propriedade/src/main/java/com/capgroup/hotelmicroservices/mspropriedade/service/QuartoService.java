@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface QuartoService {
 
-    QuartoResponseDTO criar(Long propriedadeId, QuartoRequestDTO dto);
+    QuartoResponseDTO create(Long propriedadeId, QuartoRequestDTO dto);
 
     List<QuartoResponseDTO> listarPorPropriedade(Long propriedadeId);
 
     QuartoResponseDTO buscarPorId(Long propriedadeId, Long quartoId);
 
-    QuartoResponseDTO atualizar(Long propriedadeId, Long quartoId, QuartoRequestDTO dto);
+    QuartoResponseDTO update(Long propriedadeId, Long quartoId, QuartoRequestDTO dto);
 
     void deletar(Long propriedadeId, Long quartoId);
 }

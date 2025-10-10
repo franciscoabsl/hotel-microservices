@@ -25,7 +25,7 @@ public class QuartoController {
     public ResponseEntity<QuartoResponseDTO> criar(
             @PathVariable Long propriedadeId,
             @RequestBody QuartoRequestDTO dto) {
-        return ResponseEntity.ok(quartoService.criar(propriedadeId, dto));
+        return ResponseEntity.ok(quartoService.create(propriedadeId, dto));
     }
 
     @GetMapping
@@ -45,7 +45,7 @@ public class QuartoController {
             @PathVariable Long propriedadeId,
             @PathVariable Long quartoId,
             @RequestBody QuartoRequestDTO dto) {
-        return ResponseEntity.ok(quartoService.atualizar(propriedadeId, quartoId, dto));
+        return ResponseEntity.ok(quartoService.update(propriedadeId, quartoId, dto));
     }
 
     @DeleteMapping("/{quartoId}")

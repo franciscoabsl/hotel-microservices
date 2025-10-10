@@ -8,13 +8,13 @@ import java.util.List;
 
 @Service
 public interface PropriedadeService {
-    PropriedadeResponseDTO criar(PropriedadeRequestDTO dto);
+    PropriedadeResponseDTO create(PropriedadeRequestDTO dto);
 
     List<PropriedadeResponseDTO> listar();
 
     PropriedadeResponseDTO buscarPorId(Long id);
 
-    PropriedadeResponseDTO atualizar(Long id, PropriedadeRequestDTO dto);
+    PropriedadeResponseDTO update(Long id, PropriedadeRequestDTO dto);
 
-    void deletar(Long id);
+    void delete(Long id);
 }

@@ -19,7 +19,7 @@ public class PropriedadeServiceImpl implements PropriedadeService {
     private final PropriedadeMapper propriedadeMapper;
 
     @Override
-    public PropriedadeResponseDTO criar(PropriedadeRequestDTO dto) {
+    public PropriedadeResponseDTO create(PropriedadeRequestDTO dto) {
         Propriedade entidade = propriedadeMapper.toEntity(dto);
         propriedadeRepository.save(entidade);
         return propriedadeMapper.toResponseDTO(entidade);
@@ -41,7 +41,7 @@ public class PropriedadeServiceImpl implements PropriedadeService {
     }
 
     @Override
-    public PropriedadeResponseDTO atualizar(Long id, PropriedadeRequestDTO dto) {
+    public PropriedadeResponseDTO update(Long id, PropriedadeRequestDTO dto) {
         Propriedade propriedade = propriedadeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Propriedade não encontrada"));
 
