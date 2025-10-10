@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +20,9 @@ public class PropriedadeServiceImpl implements PropriedadeService {
     private final PropriedadeMapper propriedadeMapper;
 
     @Override
-    public PropriedadeResponseDTO create(PropriedadeRequestDTO dto) {
+    public PropriedadeResponseDTO create(PropriedadeRequestDTO dto, UUID userId) {
         Propriedade entidade = propriedadeMapper.toEntity(dto);
+        entidade.setProprietarioId(userId);
         propriedadeRepository.save(entidade);
         return propriedadeMapper.toResponseDTO(entidade);
     }
@@ -34,14 +36,14 @@ public class PropriedadeServiceImpl implements PropriedadeService {
     }
 
     @Override
-    public PropriedadeResponseDTO buscarPorId(Long id) {
+    public PropriedadeResponseDTO buscarPorId(UUID id) {
         Propriedade propriedade = propriedadeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Propriedade não encontrada"));
         return propriedadeMapper.toResponseDTO(propriedade);
     }
 
     @Override
-    public PropriedadeResponseDTO update(Long id, PropriedadeRequestDTO dto) {
+    public PropriedadeResponseDTO update(UUID id, PropriedadeRequestDTO dto) {
         Propriedade propriedade = propriedadeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Propriedade não encontrada"));
 
@@ -55,7 +57,7 @@ public class PropriedadeServiceImpl implements PropriedadeService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         propriedadeRepository.deleteById(id);
     }
 }

@@ -25,7 +25,7 @@ public class ReservaController implements ReservaPortIn {
     }
 
     @PreAuthorize("hasRole('HOSPEDE')")
-    @PostMapping("/quarto/{quartoId}")
+    @PostMapping("/quartos/{quartoId}")
     public ResponseEntity<ReservaResponseDto> criarReserva(
             @PathVariable UUID quartoId,
             @RequestBody @Valid ReservaInputDto inputDto,

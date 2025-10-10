@@ -3,9 +3,10 @@ package com.capgroup.hotelmicroservices.mspropriedade.dto.responses;
 import com.capgroup.hotelmicroservices.mspropriedade.domain.TipoPropriedade;
 
 import java.util.List;
+import java.util.UUID;
 
 public record PropriedadeResponseDTO(
-        Long id,
+        UUID id,
         String nome,
         String descricao,
         TipoPropriedade tipo,

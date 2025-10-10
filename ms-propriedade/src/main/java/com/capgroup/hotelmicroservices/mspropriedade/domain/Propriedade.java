@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "properties")
@@ -18,14 +19,14 @@ import java.util.List;
 public class Propriedade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String nome;
 
     private String descricao;
 
-    private Long proprietarioId;
+    private UUID proprietarioId;
 
     @Embedded
     private Endereco endereco;

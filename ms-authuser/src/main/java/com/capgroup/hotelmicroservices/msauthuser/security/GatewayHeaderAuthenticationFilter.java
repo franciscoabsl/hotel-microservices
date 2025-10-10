@@ -28,6 +28,7 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+
         String path = request.getRequestURI();
         if (isPublicAuthEndpoint(request.getMethod(), path)) {
             filterChain.doFilter(request, response);

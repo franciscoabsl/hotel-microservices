@@ -17,9 +17,9 @@ public class PropriedadeClientImpl implements PropriedadeClient {
     }
 
     @Override
-    public QuartoDetalheDto getQuartoDetalhe(UUID quartoId) {
+    public QuartoDetalheDto getQuartoDetalhe(UUID id) {
         return propriedadeWebClient.get()
-                .uri("/propriedades/quarto/{id}", quartoId)
+                .uri("/quartos/{id}/detalhes", id)
                 .retrieve()
                 // Garante que o WebClient converta a resposta JSON para o DTO correto
                 .bodyToMono(QuartoDetalheDto.class)

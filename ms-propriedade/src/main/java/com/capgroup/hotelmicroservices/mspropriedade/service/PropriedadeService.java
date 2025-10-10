@@ -5,16 +5,17 @@ import com.capgroup.hotelmicroservices.mspropriedade.dto.responses.PropriedadeRe
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public interface PropriedadeService {
-    PropriedadeResponseDTO create(PropriedadeRequestDTO dto);
+    PropriedadeResponseDTO create(PropriedadeRequestDTO dto, UUID userId);
 
     List<PropriedadeResponseDTO> listar();
 
-    PropriedadeResponseDTO buscarPorId(Long id);
+    PropriedadeResponseDTO buscarPorId(UUID id);
 
-    PropriedadeResponseDTO update(Long id, PropriedadeRequestDTO dto);
+    PropriedadeResponseDTO update(UUID id, PropriedadeRequestDTO dto);
 
-    void delete(Long id);
+    void delete(UUID id);
 }

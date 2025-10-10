@@ -4,5 +4,5 @@ import com.capgroup.hotelmicroservices.msreserva.ports.out.dtos.UsuarioDetalheDt
 import java.util.UUID;
 
 public interface AuthUserClient {
-    UsuarioDetalheDto getUsuarioDetalhe(UUID userId);
+    UsuarioDetalheDto getUsuarioDetalhe(UUID userId, String role);
 }

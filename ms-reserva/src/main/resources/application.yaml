@@ -25,7 +25,7 @@ spring:
   # Configuração do RabbitMQ
   rabbitmq:
     exchange:
-      reserva: reserva-exchange
+      reserva: reserva.topic
     host: rabbitmq
 
 # Configurações de Resiliência (Resilience4j)
@@ -63,7 +63,7 @@ resilience4j:
 app:
   service:
     authuser:
-      url: http://ms-authuser:8081/usuarios
+      url: http://ms-authuser:8081/
 
     propriedade:
-        url: http://ms-propriedade:8082/propriedades
+        url: http://ms-propriedade:8082/

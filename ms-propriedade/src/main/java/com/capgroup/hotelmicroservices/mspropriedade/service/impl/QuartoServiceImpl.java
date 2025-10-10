@@ -4,6 +4,7 @@ package com.capgroup.hotelmicroservices.mspropriedade.service.impl;
 import com.capgroup.hotelmicroservices.mspropriedade.domain.Propriedade;
 import com.capgroup.hotelmicroservices.mspropriedade.domain.Quarto;
 import com.capgroup.hotelmicroservices.mspropriedade.dto.requests.QuartoRequestDTO;
+import com.capgroup.hotelmicroservices.mspropriedade.dto.responses.QuartoCompletoResponseDTO;
 import com.capgroup.hotelmicroservices.mspropriedade.dto.responses.QuartoResponseDTO;
 import com.capgroup.hotelmicroservices.mspropriedade.mapper.QuartoMapper;
 import com.capgroup.hotelmicroservices.mspropriedade.repository.PropriedadeRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class QuartoServiceImpl implements QuartoService {
     private final QuartoMapper quartoMapper;
 
     @Override
-    public QuartoResponseDTO create(Long propriedadeId, QuartoRequestDTO dto) {
+    public QuartoResponseDTO create(UUID propriedadeId, QuartoRequestDTO dto) {
         Propriedade propriedade = propriedadeRepository.findById(propriedadeId)
                 .orElseThrow(() -> new RuntimeException("Propriedade não encontrada"));
 
@@ -35,7 +37,7 @@ public class QuartoServiceImpl implements QuartoService {
     }
 
     @Override
-    public List<QuartoResponseDTO> listarPorPropriedade(Long propriedadeId) {
+    public List<QuartoResponseDTO> listarPorPropriedade(UUID propriedadeId) {
         return quartoRepository.findByPropriedadeId(propriedadeId)
                 .stream()
                 .map(quartoMapper::toResponseDTO)
@@ -43,15 +45,14 @@ public class QuartoServiceImpl implements QuartoService {
     }
 
     @Override
-    public QuartoResponseDTO buscarPorId(Long propriedadeId, Long quartoId) {
+    public QuartoResponseDTO buscarPorId(UUID quartoId) {
         Quarto quarto = quartoRepository.findById(quartoId)
-                .filter(q -> q.getPropriedade().getId().equals(propriedadeId))
                 .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
         return quartoMapper.toResponseDTO(quarto);
     }
 
     @Override
-    public QuartoResponseDTO update(Long propriedadeId, Long quartoId, QuartoRequestDTO dto) {
+    public QuartoResponseDTO update(UUID propriedadeId, UUID quartoId, QuartoRequestDTO dto) {
         Quarto quarto = quartoRepository.findById(quartoId)
                 .filter(q -> q.getPropriedade().getId().equals(propriedadeId))
                 .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
@@ -65,10 +66,29 @@ public class QuartoServiceImpl implements QuartoService {
     }
 
     @Override
-    public void deletar(Long propriedadeId, Long quartoId) {
+    public void deletar(UUID propriedadeId, UUID quartoId) {
         Quarto quarto = quartoRepository.findById(quartoId)
                 .filter(q -> q.getPropriedade().getId().equals(propriedadeId))
                 .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
         quartoRepository.delete(quarto);
+    }
+
+    @Override
+    public QuartoCompletoResponseDTO buscarPorIdDetalhado(UUID quartoId) {
+        Quarto quarto = quartoRepository.findById(quartoId)
+                .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
+
+        Propriedade propriedade = propriedadeRepository.findById(quarto.getPropriedade().getId())
+                .orElseThrow(() -> new RuntimeException("Propriedade não encontrada"));
+
+        return new QuartoCompletoResponseDTO(
+                quarto.getId(),
+                quarto.getDescricao(),
+                quarto.getNome(),
+                quarto.getValorDiaria(),
+                propriedade.getId(),
+                propriedade.getNome(),
+                propriedade.getProprietarioId()
+        );
     }
 }

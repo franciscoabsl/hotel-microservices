@@ -5,6 +5,7 @@ import com.capgroup.hotelmicroservices.msreserva.core.domain.Reserva;
 import com.capgroup.hotelmicroservices.msreserva.ports.out.RabbitMQSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,17 @@ public class RabbitMQSenderImpl implements RabbitMQSender {
 
     private static final String ROUTING_KEY_BASE = "reserva.";
 
-    public RabbitMQSenderImpl(@Value("${spring.rabbitmq.exchange.reserva}") String reservaExchange, RabbitTemplate rabbitTemplate) {
+    public RabbitMQSenderImpl(
+            @Value("${spring.rabbitmq.exchange.reserva}") String reservaExchange,
+            RabbitTemplate rabbitTemplate,
+            MessageConverter jsonMessageConverter
+    ) {
         this.reservaExchange = reservaExchange;
         this.rabbitTemplate = rabbitTemplate;
+        this.rabbitTemplate.setMessageConverter(jsonMessageConverter);
     }
 
-    @Override // Sobrescrita obrigatória do método da interface
+    @Override
     public void sendReservaEvent(Reserva reserva, String tipoEvento) {
         // Mapeia a Entidade Rica para o DTO de Evento para o RabbitMQ
         ReservaEventoDto eventoDto = mapToReservaEventoDto(reserva, tipoEvento);
