@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/propriedades")
 @RequiredArgsConstructor
@@ -22,8 +24,13 @@ public class PropriedadeController {
     private final PropriedadeService propriedadeService;
 
     @PostMapping
-    public ResponseEntity<PropriedadeResponseDTO> criar(@RequestBody PropriedadeRequestDTO dto) {
-        return ResponseEntity.ok(propriedadeService.create(dto));
+
+    public ResponseEntity<PropriedadeResponseDTO> criar(
+            @RequestBody PropriedadeRequestDTO dto,
+            @RequestHeader("X-User-ID") UUID userId,
+            @RequestHeader("X-User-Roles") String userRoles
+    ) {
+        return ResponseEntity.ok(propriedadeService.create(dto, userId));
     }
 
     @GetMapping
@@ -32,17 +39,17 @@ public class PropriedadeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PropriedadeResponseDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PropriedadeResponseDTO> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(propriedadeService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PropriedadeResponseDTO> atualizar(@PathVariable Long id, @RequestBody PropriedadeRequestDTO dto) {
+    public ResponseEntity<PropriedadeResponseDTO> atualizar(@PathVariable UUID id, @RequestBody PropriedadeRequestDTO dto) {
         return ResponseEntity.ok(propriedadeService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         propriedadeService.delete(id);
         return ResponseEntity.noContent().build();
     }

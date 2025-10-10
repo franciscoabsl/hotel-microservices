@@ -17,9 +17,11 @@ public class AuthUserClientImpl implements AuthUserClient {
     }
 
     @Override
-    public UsuarioDetalheDto getUsuarioDetalhe(UUID userId) {
+    public UsuarioDetalheDto getUsuarioDetalhe(UUID userId, String role) {
         return authUserWebClient.get()
-                .uri("/usuario/{id}", userId)
+                .uri("/usuarios/{id}", userId)
+                .header("X-User-ID", userId.toString())
+                .header("X-User-Roles", role)
                 .retrieve()
                 // Garante que o WebClient converta a resposta JSON para o DTO correto
                 .bodyToMono(UsuarioDetalheDto.class)

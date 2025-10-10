@@ -7,5 +7,7 @@ public record UsuarioDetalheDto(
         UUID id,
         String nome,
         String email,
-        String perfil
+        String cpf,
+        String perfil,
+        String telefone
 ) {}
