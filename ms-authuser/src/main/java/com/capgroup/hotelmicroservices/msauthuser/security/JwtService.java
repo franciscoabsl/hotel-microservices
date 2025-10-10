@@ -10,38 +10,46 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class JwtService {
 
-    private final SecretKey secretKey;
+    private final String secretKey;
     private final long expirationSeconds;
 
-    public JwtService(
-            @Value("${security.jwt.secret:change-me-please-change-me-please-change-me-please!}") String secret,
-            @Value("${security.jwt.expiration-seconds:3600}") long expirationSeconds
-    ) {
-        byte[] keyBytes = isBase64(secret) ? Decoders.BASE64.decode(secret) : secret.getBytes(StandardCharsets.UTF_8);
-        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
-        this.expirationSeconds = expirationSeconds;
+    public JwtService(@Value("${security.jwt.secret}") String secret,
+                      @Value("${security.jwt.expiration-seconds}") long expirationTime) {
+        this.secretKey = secret;
+        this.expirationSeconds = expirationTime;
     }
 
-    public String generateToken(Usuario usuario) {
-        Instant now = Instant.now();
-        Instant exp = now.plusSeconds(expirationSeconds);
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
-    return Jwts.builder()
-        .setId(UUID.randomUUID().toString())
-        .setSubject(usuario.getEmail())
-        .setIssuedAt(Date.from(now))
-        .setExpiration(Date.from(exp))
-        .claim("userId", usuario.getId().toString())
-        .claim("roles", usuario.getPerfil().name())
-        .signWith(secretKey, SignatureAlgorithm.HS256)
-        .compact();
+    /**
+     * Gera o token JWT para o usuário autenticado.
+     */
+    public String generateToken(Usuario usuario) {
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", usuario.getId().toString());
+        claims.put("roles", usuario.getPerfil().name());
+        claims.put("email", usuario.getEmail());
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationSeconds);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(usuario.getEmail())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public long getExpirationSeconds() {

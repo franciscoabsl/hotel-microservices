@@ -47,11 +47,23 @@ resilience4j:
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 2
         automaticTransitionFromOpenToHalfOpen-enabled:  true
+  retry:
+    instances:
+      authServiceCB:
+        maxAttempts: 3                   # Tenta a chamada no máximo 3 vezes
+        waitDuration: 1s                 # Espera 1 segundo entre as tentativas
+        retryExceptions: # Quais exceções devem disparar o Retry
+          - org.springframework.web.client.ResourceAccessException # Exceção de conexão (Timeout, Host down)
+      propriedadeServiceCB:
+        maxAttempts: 3                   # Tenta a chamada no máximo 3 vezes
+        waitDuration: 1s                 # Espera 1 segundo entre as tentativas
+        retryExceptions:
+          - org.springframework.web.client.ResourceAccessException
 
 app:
   service:
     authuser:
-      url: http://ms-authuser:8081/api/authuser
+      url: http://ms-authuser:8081/usuarios
 
     propriedade:
-        url: http://ms-propriedade:8082/api/propriedade
+        url: http://ms-propriedade:8082/propriedades

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/quartos")
+@RequestMapping("/{propriedadeId}/quartos")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Quartos", description = "API para gerenciamento de quartos")

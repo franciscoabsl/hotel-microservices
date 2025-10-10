@@ -2,6 +2,8 @@ package com.capgroup.hotelmicroservices.msapigateway.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -14,11 +16,16 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import javax.crypto.SecretKey;
+
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
-    @Value("${security.jwt.secret}")
     private String secret;
+
+    public JwtAuthenticationFilter(@Value("${security.jwt.secret}") String secret) {
+        this.secret = secret;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -42,11 +49,12 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
 
-            String userId = claims.getSubject();
+            String userId = claims.get("userId", String.class);
 
             String roles = claims.get("roles", String.class);
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
@@ -59,6 +67,10 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         } catch (Exception e) {
             return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT inválido ou expirado"));
         }
+    }
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     @Override

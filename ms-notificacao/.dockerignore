@@ -1,0 +1,15 @@
+Ignora diretórios de build do Maven (em qualquer nível)
+**/target/
+
+
+/ms-apigateway/target/
+/ms-authuser/target/
+/ms-propriedade/target/
+/ms-notificacao/target/
+/ms-reserva/target/
+
+.git
+.idea/
+.vscode/
+*.iml
+.DS_Store
