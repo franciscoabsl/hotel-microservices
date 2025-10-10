@@ -82,12 +82,12 @@ O **MailHog** (acessível em `http://localhost:8025`) atua como o servidor SMTP 
 
 ### 4.3 GitHub Actions (CI)
 
-Um *workflow* de CI está configurado para o `main` e exige que o *build* (`mvn clean verify`) passe e que haja **aprovação manual** dos desenvolvedores (Vinicius, Juliana, Nicholle) antes de qualquer *merge*.
+Um *workflow* de CI está configurado para o `main` e exige que o *build* (`mvn clean verify`) passe e que haja **aprovação manual** dos desenvolvedores (Vinicius, Juliana, Nicholle e Francisco) antes de qualquer *merge*.
 
 ## 5. Fluxos de Trabalho (Diagramas)
 
 ---
-### Fluxo de Cadastro (
+### Fluxo de Cadastro
 
 * **Foco:** Criação do Usuário e Criptografia de senha.
 
