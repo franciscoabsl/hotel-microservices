@@ -55,7 +55,7 @@ public class PropriedadeServiceImpl implements PropriedadeService {
     }
 
     @Override
-    public void deletar(Long id) {
+    public void delete(Long id) {
         propriedadeRepository.deleteById(id);
     }
 }
