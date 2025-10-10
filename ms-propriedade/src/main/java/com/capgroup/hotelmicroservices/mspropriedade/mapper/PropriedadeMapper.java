@@ -34,6 +34,17 @@ public class PropriedadeMapper {
                 ? new EnderecoResponseDTO(entity.getEndereco())
                 : null;
 
+        if (entity.getQuartos() == null) {
+            return new PropriedadeResponseDTO(
+                    entity.getId(),
+                    entity.getNome(),
+                    entity.getDescricao(),
+                    entity.getTipo(),
+                    enderecoDto,
+                    List.of()
+            );
+        }
+
         List<QuartoResponseDTO> quartosDto = entity.getQuartos().stream()
                 .map(quartoMapper::toResponseDTO)
                 .toList();

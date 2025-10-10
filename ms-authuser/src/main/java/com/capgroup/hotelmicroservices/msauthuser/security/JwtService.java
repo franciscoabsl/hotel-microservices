@@ -41,7 +41,7 @@ public class JwtService {
         claims.put("email", usuario.getEmail());
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationSeconds);
+        Date expiryDate = new Date(now.getTime() + (expirationSeconds * 1000));
 
         return Jwts.builder()
                 .setClaims(claims)

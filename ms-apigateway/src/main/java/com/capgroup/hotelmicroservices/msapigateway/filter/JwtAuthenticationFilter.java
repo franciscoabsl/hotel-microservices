@@ -2,7 +2,6 @@ package com.capgroup.hotelmicroservices.msapigateway.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -30,9 +29,14 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        String path = request.getURI().getPath();
 
         if (request.getURI().getPath().contains("/auth/login") ||
                 request.getURI().getPath().contains("/auth/register")) {
+            return chain.filter(exchange);
+        }
+
+        if (request.getMethod().matches("GET") && (path.startsWith("/propriedades") || (path.startsWith("/quartos")))) {
             return chain.filter(exchange);
         }
 
