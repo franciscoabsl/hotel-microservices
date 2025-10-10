@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/quartos")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Quartos", description = "API para gerenciamento de quartos")
@@ -21,14 +20,14 @@ public class QuartoController {
 
     private final QuartoService quartoService;
 
-    @PostMapping
+    @PostMapping("/propriedades/{propriedadeId}/quartos")
     public ResponseEntity<QuartoResponseDTO> criar(
             @PathVariable Long propriedadeId,
             @RequestBody QuartoRequestDTO dto) {
         return ResponseEntity.ok(quartoService.create(propriedadeId, dto));
     }
 
-    @GetMapping
+    @GetMapping("/propriedades/{propriedadeId}/quartos")
     public ResponseEntity<List<QuartoResponseDTO>> listar(@PathVariable Long propriedadeId) {
         return ResponseEntity.ok(quartoService.listarPorPropriedade(propriedadeId));
     }

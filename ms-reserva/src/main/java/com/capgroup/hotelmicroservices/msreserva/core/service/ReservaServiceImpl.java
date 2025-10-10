@@ -14,6 +14,7 @@ import com.capgroup.hotelmicroservices.msreserva.core.domain.ReservaStatusEnum;
 import com.capgroup.hotelmicroservices.msreserva.ports.out.ReservaRepository;
 import com.capgroup.hotelmicroservices.msreserva.ports.out.RabbitMQSender;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -170,15 +171,15 @@ public class ReservaServiceImpl implements ReservaService {
 
     // --- MÉTODOS DE RESILIÊNCIA E FALLBACK (Usando as Interfaces de Cliente) ---
 
-    @CircuitBreaker(name = PROP_CB, fallbackMethod = "fallbackGetQuarto")
+    @Retry(name = PROP_CB, fallbackMethod = "fallbackGetQuarto")
+    @CircuitBreaker(name = PROP_CB)
     private QuartoDetalheDto getQuartoDetails(UUID quartoId) {
-        // Usa a Interface (que internamente usa o WebClient)
         return propriedadeClient.getQuartoDetalhe(quartoId);
     }
 
-    @CircuitBreaker(name = AUTH_CB, fallbackMethod = "fallbackGetUsuario")
+    @Retry(name = AUTH_CB, fallbackMethod = "fallbackGetUsuario")
+    @CircuitBreaker(name = AUTH_CB)
     private UsuarioDetalheDto getUsuarioDetails(UUID userId) {
-        // Usa a Interface (que internamente usa o WebClient)
         return authUserClient.getUsuarioDetalhe(userId);
     }
 
@@ -192,7 +193,6 @@ public class ReservaServiceImpl implements ReservaService {
         throw new RecursoNaoDisponivelException("Serviço de Autenticação/Usuário indisponível. Tente novamente mais tarde.");
     }
 
-    // --- 4. LÓGICA DE AGENDAMENTO (EVENTO LEMBRETE) ---
     @Scheduled(cron = "0 0 8 * * *") // Todo dia às 8h
     public void publicarLembretesDiarios() {
         log.info("Executando job de verificação de lembretes diários.");

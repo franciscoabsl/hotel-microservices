@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: ms-notificacao
+
   datasource:
     url: jdbc:postgresql://hotel_db:${DB_PORT}/${NOTIFICACAO_DB_NAME}
     username: ${DB_USERNAME}
@@ -41,7 +42,3 @@ app:
   rabbitmq:
     queue:
       notificacao: reserva.notificacao.queue
-
-    spring:
-      application:
-        name: ms-notificacao
