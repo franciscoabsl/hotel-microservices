@@ -23,7 +23,7 @@ public class QuartoServiceImpl implements QuartoService {
     private final QuartoMapper quartoMapper;
 
     @Override
-    public QuartoResponseDTO criar(Long propriedadeId, QuartoRequestDTO dto) {
+    public QuartoResponseDTO create(Long propriedadeId, QuartoRequestDTO dto) {
         Propriedade propriedade = propriedadeRepository.findById(propriedadeId)
                 .orElseThrow(() -> new RuntimeException("Propriedade não encontrada"));
 
@@ -51,7 +51,7 @@ public class QuartoServiceImpl implements QuartoService {
     }
 
     @Override
-    public QuartoResponseDTO atualizar(Long propriedadeId, Long quartoId, QuartoRequestDTO dto) {
+    public QuartoResponseDTO update(Long propriedadeId, Long quartoId, QuartoRequestDTO dto) {
         Quarto quarto = quartoRepository.findById(quartoId)
                 .filter(q -> q.getPropriedade().getId().equals(propriedadeId))
                 .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
