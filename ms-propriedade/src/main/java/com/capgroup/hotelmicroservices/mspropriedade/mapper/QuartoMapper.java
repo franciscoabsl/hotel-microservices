@@ -22,11 +22,10 @@ public class QuartoMapper {
 
         return new QuartoResponseDTO(
                 entity.getId(),
-                entity.getNome(),
                 entity.getDescricao(),
+                entity.getNome(),
                 entity.getValorDiaria(),
-                entity.getStatus(),
-                nomePropriedade
+                entity.getPropriedade().getId()
         );
     }
 }

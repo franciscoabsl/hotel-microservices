@@ -39,12 +39,7 @@ spring:
             - id: ms-propriedade-propriedade
               uri: http://ms-propriedade:8082
               predicates:
-                - Path=/propriedades/**
-
-            - id: ms-propriedade-quartos
-              uri: http://ms-propriedade:8082
-              predicates:
-                - Path=/quartos/**
+                - Path=/propriedades/**, /quartos/**
 
             - id: ms-reserva
               uri: http://ms-reserva:8083

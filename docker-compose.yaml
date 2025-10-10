@@ -80,10 +80,12 @@ services:
     container_name: ms-propriedade
     ports:
       - "8082:8082"
+      - "5007:5005"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${PROPRIEDADE_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     depends_on:
       hotel_db:
         condition: service_healthy
@@ -99,6 +101,7 @@ services:
     container_name: ms-reserva
     ports:
       - "8083:8083"
+      - "5008:5005"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${RESERVA_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
@@ -106,6 +109,7 @@ services:
       SPRING_RABBITMQ_HOST: ${SPRING_RABBITMQ_HOST}
       SPRING_RABBITMQ_USERNAME: ${SPRING_RABBITMQ_USERNAME}
       SPRING_RABBITMQ_PASSWORD: ${SPRING_RABBITMQ_PASSWORD}
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     depends_on:
       hotel_db:
         condition: service_healthy
@@ -123,6 +127,7 @@ services:
     container_name: ms-notificacao
     ports:
       - "8084:8084"
+      - "5009:5005"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hotel_db:5432/${NOTIFICACAO_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
@@ -132,6 +137,7 @@ services:
       SPRING_RABBITMQ_HOST: ${SPRING_RABBITMQ_HOST}
       SPRING_RABBITMQ_USERNAME: ${SPRING_RABBITMQ_USERNAME}
       SPRING_RABBITMQ_PASSWORD: ${SPRING_RABBITMQ_PASSWORD}
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     depends_on:
       hotel_db:
         condition: service_healthy
@@ -141,7 +147,8 @@ services:
     networks:
       - hotel_network
 
-    # ------ RABBITMQ ------
+
+  # RABBITMQ
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq

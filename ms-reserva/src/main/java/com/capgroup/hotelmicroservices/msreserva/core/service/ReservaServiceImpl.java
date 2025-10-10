@@ -63,11 +63,12 @@ public class ReservaServiceImpl implements ReservaService {
 
         // 2 & 3. COLETA DE DADOS COM RESILIÊNCIA (Circuit Breaker)
         QuartoDetalheDto quarto = getQuartoDetails(quartoId);
-        UsuarioDetalheDto hospede = getUsuarioDetails(userId);
+        UsuarioDetalheDto hospede = getUsuarioDetails(userId, "HOSPEDE");
+        UsuarioDetalheDto proprietario = getUsuarioDetails(quarto.proprietarioId(), "PROPRIETARIO");
 
         // 4. AGREGAÇÃO E CÁLCULO
-        Reserva novaReserva = montarReserva(quarto, hospede, inputDto);
-        novaReserva.setValorTotal(calcularValor(quarto.valorDiaria(), inputDto));
+        Reserva novaReserva = montarReserva(quarto, hospede, proprietario, inputDto);
+        novaReserva.setValorTotal(calcularValor(BigDecimal.valueOf(quarto.valorDiaria()), inputDto));
 
         // 5. PERSISTÊNCIA
         Reserva reservaSalva = reservaRepository.save(novaReserva);
@@ -101,7 +102,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         // Recálculo do valor: Busca o valor da diária novamente (caso tenha mudado)
         QuartoDetalheDto quarto = getQuartoDetails(reserva.getQuartoId());
-        reserva.setValorTotal(calcularValor(quarto.valorDiaria(), inputDto));
+        reserva.setValorTotal(calcularValor(BigDecimal.valueOf(quarto.valorDiaria()), inputDto));
 
         // 4. Persistência e Notificação
         Reserva reservaAtualizada = reservaRepository.save(reserva);
@@ -179,8 +180,8 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Retry(name = AUTH_CB, fallbackMethod = "fallbackGetUsuario")
     @CircuitBreaker(name = AUTH_CB)
-    private UsuarioDetalheDto getUsuarioDetails(UUID userId) {
-        return authUserClient.getUsuarioDetalhe(userId);
+    private UsuarioDetalheDto getUsuarioDetails(UUID userId, String role) {
+        return authUserClient.getUsuarioDetalhe(userId, role);
     }
 
     private QuartoDetalheDto fallbackGetQuarto(UUID quartoId, Throwable t) {
@@ -241,18 +242,20 @@ public class ReservaServiceImpl implements ReservaService {
         );
     }
 
-    private Reserva montarReserva(QuartoDetalheDto quarto, UsuarioDetalheDto hospede, ReservaInputDto input) {
+    private Reserva montarReserva(QuartoDetalheDto quarto, UsuarioDetalheDto hospede, UsuarioDetalheDto proprietario, ReservaInputDto input) {
         Reserva r = new Reserva();
         r.setQuartoId(quarto.id());
         r.setHospedeId(hospede.id());
         r.setCheckIn(input.checkIn());
         r.setCheckOut(input.checkOut());
         r.setNomeHospede(hospede.nome());
+        r.setEmailHospede(hospede.email());
         r.setProprietarioId(quarto.proprietarioId());
-        r.setNomeProprietario(quarto.nomePropriedade()); // Dados ricos
+        r.setNomeProprietario(proprietario.nome()); // Dados ricos
+        r.setEmailProprietario(proprietario.email());
         r.setNomePropriedade(quarto.nomePropriedade());
         r.setNomeQuarto(quarto.nomeQuarto());
-        r.setValorTotal(calcularValor(quarto.valorDiaria(), input));
+        r.setValorTotal(calcularValor(BigDecimal.valueOf(quarto.valorDiaria()), input));
 
         return r;
     }

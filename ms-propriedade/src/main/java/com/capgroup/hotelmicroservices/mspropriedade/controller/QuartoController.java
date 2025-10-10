@@ -1,6 +1,7 @@
 package com.capgroup.hotelmicroservices.mspropriedade.controller;
 
 import com.capgroup.hotelmicroservices.mspropriedade.dto.requests.QuartoRequestDTO;
+import com.capgroup.hotelmicroservices.mspropriedade.dto.responses.QuartoCompletoResponseDTO;
 import com.capgroup.hotelmicroservices.mspropriedade.dto.responses.QuartoResponseDTO;
 import com.capgroup.hotelmicroservices.mspropriedade.service.QuartoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,35 +24,40 @@ public class QuartoController {
 
     @PostMapping("/propriedades/{propriedadeId}/quartos")
     public ResponseEntity<QuartoResponseDTO> criar(
-            @PathVariable Long propriedadeId,
+            @PathVariable UUID propriedadeId,
             @RequestBody QuartoRequestDTO dto) {
         return ResponseEntity.ok(quartoService.create(propriedadeId, dto));
     }
 
     @GetMapping("/propriedades/{propriedadeId}/quartos")
-    public ResponseEntity<List<QuartoResponseDTO>> listar(@PathVariable Long propriedadeId) {
+    public ResponseEntity<List<QuartoResponseDTO>> listar(@PathVariable UUID propriedadeId) {
         return ResponseEntity.ok(quartoService.listarPorPropriedade(propriedadeId));
     }
 
-    @GetMapping("/{quartoId}")
+    @GetMapping("/quartos/{quartoId}")
     public ResponseEntity<QuartoResponseDTO> buscarPorId(
-            @PathVariable Long propriedadeId,
-            @PathVariable Long quartoId) {
-        return ResponseEntity.ok(quartoService.buscarPorId(propriedadeId, quartoId));
+            @PathVariable UUID quartoId) {
+        return ResponseEntity.ok(quartoService.buscarPorId(quartoId));
     }
 
-    @PutMapping("/{quartoId}")
+    @GetMapping("/quartos/{quartoId}/detalhes")
+    public ResponseEntity<QuartoCompletoResponseDTO> buscarPorIdDetalhado(
+            @PathVariable UUID quartoId) {
+        return ResponseEntity.ok(quartoService.buscarPorIdDetalhado(quartoId));
+    }
+
+    @PutMapping("/quartos/{quartoId}")
     public ResponseEntity<QuartoResponseDTO> atualizar(
-            @PathVariable Long propriedadeId,
-            @PathVariable Long quartoId,
+            @PathVariable UUID propriedadeId,
+            @PathVariable UUID quartoId,
             @RequestBody QuartoRequestDTO dto) {
         return ResponseEntity.ok(quartoService.update(propriedadeId, quartoId, dto));
     }
 
-    @DeleteMapping("/{quartoId}")
+    @DeleteMapping("/quartos/{quartoId}")
     public ResponseEntity<Void> deletar(
-            @PathVariable Long propriedadeId,
-            @PathVariable Long quartoId) {
+            @PathVariable UUID propriedadeId,
+            @PathVariable UUID quartoId) {
         quartoService.deletar(propriedadeId, quartoId);
         return ResponseEntity.noContent().build();
     }
