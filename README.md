@@ -47,7 +47,7 @@ O modelo de segurança é *stateless* e confiável.
 O **Reservas MS** utiliza **WebClient** e **Resilience4j** para proteger as chamadas síncronas de orquestração:
 
 * **Circuit Breaker:** Evita falhas em cascata, abrindo o circuito se o serviço dependente falhar (`@CircuitBreaker`).
-* **Timeout / Retry / Bulkhead:** Gerenciam a latência e a capacidade de *thread* para evitar sobrecarga.
+* **Timeout / Retry :** Gerenciam a latência e a capacidade de *thread* para evitar sobrecarga.
 
 ### 2.3 Comunicação Assíncrona (RabbitMQ)
 
