@@ -15,7 +15,6 @@
       <table class="table">
         <thead>
         <tr>
-          <th scope="col">#</th>
           <th scope="col">Nome</th>
           <th scope="col">Descrição</th>
           <th scope="col">Tipo </th>
@@ -25,7 +24,6 @@
         </thead>
         <tbody *ngIf="dados.length > 0; else semDados">
         <tr *ngFor="let propriedade of dados">
-          <th scope="row">{{propriedade.id}}</th>
           <td>{{propriedade.nome}}</td>
           <td>{{propriedade.descricao}}</td>
           <td>{{propriedade.tipo }}</td>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PropriedadeService } from 'src/app/services/propriedade-service/propriedade-service';
+import { PropriedadeService } from 'src/app/core/services/propriedade-service/propriedade-service';
 import { CommonModule } from '@angular/common';
 //import { CamelCasePipe } from 'src/app/pipes/camel-case-pipe';
 import { Router } from '@angular/router';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PropriedadeService } from 'src/app/services/propriedade-service/propriedade-service';
+import { PropriedadeService } from 'src/app/core/services/propriedade-service/propriedade-service';
 
 @Component({
   selector: 'app-editar-propriedade',

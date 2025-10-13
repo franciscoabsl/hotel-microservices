@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AuthUserApi } from 'src/app/services/auth-user-api';
+import { AuthUserApi } from 'src/app/core/services/auth-user-api';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

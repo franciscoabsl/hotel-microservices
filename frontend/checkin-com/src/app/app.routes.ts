@@ -5,9 +5,10 @@ import { Reserva } from './components/reserva/reserva';
 import { Propriedade } from './components/propriedade/propriedade';
 import { CadastrarPropriedade } from './components/propriedade/cadastrar/cadastrar-propriedade';
 import { EditarPropriedade } from './components/propriedade/editar/editar-propriedade';
-import { PropriedadeResolver } from './resolvers/propriedade.resolver';
+import { PropriedadeResolver } from './core/resolvers/propriedade.resolver';
 
 export const routes: Routes = [
+  { path: '', component: Home },
   { path: 'login', component: Login },
   { path: 'home', component: Home },
   { path: 'reservas', component: Reserva },

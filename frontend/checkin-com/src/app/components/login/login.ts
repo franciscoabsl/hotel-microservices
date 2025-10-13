@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthUserApi } from 'src/app/services/auth-user-api';
+import { AuthUserApi } from 'src/app/core/services/auth-user-api';
 
 @Component({
   selector: 'app-login',

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms'; // <-- importar aqui
 
-import { PropriedadeService } from 'src/app/services/propriedade-service/propriedade-service';
+import { PropriedadeService } from 'src/app/core/services/propriedade-service/propriedade-service';
 import { EstadoEnum } from 'src/app/models/estado.enum';
 import { TipoPropriedadeEnum } from 'src/app/models/tipo-propriedade.enum';
 
