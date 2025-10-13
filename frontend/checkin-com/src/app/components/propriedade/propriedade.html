@@ -1,0 +1,53 @@
+<div class="content">
+  <div class="row">
+    <div class="col text-center">
+      <h3>Minhas Propriedades</h3>
+      <p class="lead">Gerencie suas propriedades de forma fácil e rápida.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-end align-self-center">
+      <button class="btn btn-primary" (click)="cadastrarPropriedade()"> + Novo</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col">Descrição</th>
+          <th scope="col">Tipo </th>
+          <th scope="col">Localização</th>
+          <th scope="col">Ações</th>
+        </tr>
+        </thead>
+        <tbody *ngIf="dados.length > 0; else semDados">
+        <tr *ngFor="let propriedade of dados">
+          <td>{{propriedade.nome}}</td>
+          <td>{{propriedade.descricao}}</td>
+          <td>{{propriedade.tipo }}</td>
+          <td>{{propriedade.endereco.cidade}} / {{propriedade.endereco.estado}} </td>
+          <td>
+            <button class="btn" (click)="editarPropriedade(propriedade)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn" (click)="excluirPropriedade(propriedade.id)">
+              <i class="bi bi-trash"></i>
+            </button>
+
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #semDados>
+  <tr class="text-center">
+    <td colspan="7">
+      <p>Nenhum dado cadastrado</p>
+    </td>
+  </tr>
+</ng-template>
