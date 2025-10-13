@@ -27,11 +27,11 @@ import { environment } from 'src/environments/environment';
     return this.http.put<any>(this.url + `/${propriedade.id}`, propriedade);
   }
 
-  excluir(id: number): Observable<any> {
+  excluir(id: string): Observable<any> {
     return this.http.delete<any>(this.url + `/${id}`);
   }
 
-  obterPorId(id: number): Observable<any> {
+  obterPorId(id: string): Observable<any> {
     return this.http.get<any>(this.url + `/${id}`);
   }
 }
