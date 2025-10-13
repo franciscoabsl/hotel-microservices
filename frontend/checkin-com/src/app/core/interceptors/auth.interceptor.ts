@@ -9,18 +9,18 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { AuthUserApi } from '../services/auth-user-api';
+import { AuthUserApi } from '../services/auth-user/auth-user-api';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private authUserApi: AuthUserApi, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authUserApi.getToken();
 
-
     // Clone request e adiciona header Authorization se houver token
     let authReq = req;
+
     if (token) {
       authReq = req.clone({
         setHeaders: {

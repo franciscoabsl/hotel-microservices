@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { PropriedadeService } from 'src/app/core/services/propriedade-service/propriedade-service';
+import { PropriedadeService } from 'src/app/core/services/propriedade/propriedade-service';
 import { CommonModule } from '@angular/common';
-//import { CamelCasePipe } from 'src/app/pipes/camel-case-pipe';
 import { Router } from '@angular/router';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-propriedade',
   imports: [
     CommonModule
-    //,CamelCasePipe
   ],
   templateUrl: './propriedade.html',
   styleUrl: './propriedade.scss'
@@ -41,7 +40,20 @@ export class Propriedade {
     this.router.navigate(['propriedades', propriedade.id, 'editar']);
   }
 
-  excluirPropriedade(id: number): void {
+
+  excluirPropriedade(id: string): void {
+   if (!confirm('Tem certeza que quer excluir esta propriedade?')) return;
+
     console.log(`Excluir propriedade com ID: ${id}`);
+    this.propriedadeService.excluir(id).pipe(take(1)).subscribe({
+      next: () => {
+        console.log('Exclusão realizada com sucesso');
+        this.carregarDados();
+      },
+      error: (err) => {
+        console.error('Erro ao excluir propriedade', err);
+        alert('Não foi possível excluir a propriedade. Tente novamente.');
+      }
+    });
   }
 }
