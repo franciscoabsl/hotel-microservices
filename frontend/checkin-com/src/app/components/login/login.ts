@@ -74,11 +74,4 @@ export class Login implements OnInit {
     });
   }
 
-  // opcional: método para login rápido durante dev
-  devFillTestUser(): void {
-    this.form.patchValue({
-      email: 'aladim@gmail.com.xd',
-      senha: '123456',
-    });
-  }
 }

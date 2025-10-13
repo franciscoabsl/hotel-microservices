@@ -123,7 +123,7 @@ services:
   frontend:
     image: checkin-frontend:latest
     build:
-      context: ./frontend;checkin-com   # caminho para a pasta do seu frontend
+      context: ./frontend/checkin-com   # caminho para a pasta do seu frontend
       dockerfile: Dockerfile
     container_name: checkin-frontend
     ports:

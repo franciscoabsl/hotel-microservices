@@ -16,9 +16,7 @@ export class Navebar  implements OnInit {
   constructor(private auth: AuthUserApi, private router: Router) {}
 
   ngOnInit(): void {
-    console.log('ngOnInit');
     const user = this.auth.getUserFromToken();
-    console.log('user', user);
 
     if(user === null) this.logout();
     this.username = user?.name || user?.userName || '';
