@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -6,15 +7,14 @@ import { AuthUserApi } from 'src/app/core/services/auth-user/auth-user-api';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
 export class Login implements OnInit {
-  form!: FormGroup;
+  formulario!: FormGroup;
   loading = false;
   errorMessage: string | null = null;
-  returnUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -24,44 +24,20 @@ export class Login implements OnInit {
   ) {}
 
   ngOnInit(): void {
-      // inicializa o formulário reativo
-      this.form = this.fb.group({
+      this.formulario = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         senha: ['', [Validators.required, Validators.minLength(6)]],
       });
-
-      // captura returnUrl, se foi passado como query param
-      const q = this.route.snapshot.queryParamMap.get('returnUrl');
-      this.returnUrl = q ? q : null;
-  }
-
-  get email() {
-    return this.form.get('email');
-  }
-  get senha() {
-    return this.form.get('senha');
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
     this.loading = true;
     this.errorMessage = null;
 
-    const payload = {
-      email: this.email!.value,
-      senha: this.senha!.value,
-    };
-
-    this.authUserApi.login(payload).subscribe({
+    this.authUserApi.login(this.formulario.value).subscribe({
       next: () => {
         this.loading = false;
-        // Login bem sucedido — navegar para returnUrl (se houver) ou para dashboard
-        const target = this.returnUrl ?? '/home';
-        this.router.navigateByUrl(target);
+        this.router.navigate(['home']);
       },
       error: (err: unknown) => {
         this.loading = false;

@@ -1,0 +1,35 @@
+<div class="container d-flex justify-content-center align-items-center">
+  <div class="card shadow my-4 p-4 w-100" style="max-width: 420px; border-radius: 1rem;">
+    <h2 class="text-center mb-4 fw-semibold">Acesso ao Sistema</h2>
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input id="email" type="email" class="form-control" formControlName="email" />
+      </div>
+      <div class="mb-3">
+        <label for="senha" class="form-label">Email</label>
+        <input id="senha" type="password" class="form-control" formControlName="senha" />
+      </div>
+
+      <!-- Mensagem de erro -->
+      <div *ngIf="errorMessage" class="alert alert-danger text-center py-2">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Botão de login -->
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary" [disabled]="!formulario.valid">
+          <span *ngIf="!loading">Fazer Login</span>
+          <span *ngIf="loading">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Entrando...
+          </span>
+        </button>
+      </div>
+
+      <div class="text-center">
+      <a class="text-decoration-none small text-muted" [routerLink]="['/register']">Registrar-se</a>
+      </div>
+    </form>
+  </div>
+</div>

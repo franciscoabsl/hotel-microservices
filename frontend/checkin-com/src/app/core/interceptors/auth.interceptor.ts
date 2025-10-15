@@ -31,14 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((err: unknown) => {
-        // Tratamento centralizado de erros de autenticação
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
-            // Token inválido/expirado — fazer logout local e redirecionar para login
             this.authUserApi.logout();
-            // Opcional: adicionar query param com returnUrl
             const returnUrl = this.router.url;
-            this.router.navigate(['/login'], { queryParams: { returnUrl } });
+           this.router.navigate(['/login'], { queryParams: { returnUrl } });
           }
         }
         return throwError(() => err);
