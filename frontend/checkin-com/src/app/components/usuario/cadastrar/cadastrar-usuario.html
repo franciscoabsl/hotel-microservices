@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <div class="my-4 p-4 w-100" >
+    <h4 class="mb-4 text-center">Cadastre-se</h4>
+    <form [formGroup]="formulario" (ngSubmit)="salvar()">
+      <div class="row">
+        <div class="col mb-3">
+          <label for="nome" class="form-label">Nome</label>
+          <input id="nome" type="text" class="form-control" formControlName="nome" />
+        </div>
+        <div class="col mb-3">
+          <label for="cpf" class="form-label">CPF</label>
+          <input id="cpf" type="cpf" class="form-control" formControlName="cpf" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input id="email" type="email" class="form-control" formControlName="email" />
+        </div>
+        <div class="col mb-3">
+          <label for="senha" class="form-label">Email</label>
+          <input id="senha" type="password" class="form-control" formControlName="senha" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col my-4">
+          <button type="submit" class="btn btn-primary" [disabled]="!formulario.valid">
+            Cadastrar
+          </button>
+          <button type="button" (click)="cancelar()" class="btn btn-danger mx-2">
+            Cancelar
+          </button>
+        </div>
+      </div>
+      <!-- Mensagem de erro -->
+      <div *ngIf="errorMessage" class="alert alert-danger text-center py-2">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</div>

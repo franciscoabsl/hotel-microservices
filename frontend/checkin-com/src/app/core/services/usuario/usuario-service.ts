@@ -3,27 +3,23 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-
-export interface LoginPayload {
-  email: string;
-  senha: string;
-}
-
-export interface LoginResponse {
-  token: string;
-}
+import {
+  LoginPayload,
+  LoginResponse,
+  UsuarioPayload,
+  UsuarioResponse
+  } from 'src/app/models/usuario';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthUserApi {
+export class UsuarioService {
   private url = environment.apiUrl;
   private tokenKey = 'auth_token';
 
   constructor(private http: HttpClient) {}
 
   login(payload: LoginPayload): Observable<void> {
-
     return this.http.post<LoginResponse>(this.url+'auth/login', payload).pipe(
       tap((res) => {
         if (!res || !res.token) {
@@ -37,39 +33,45 @@ export class AuthUserApi {
     );
   }
 
+  register(payload: UsuarioPayload): Observable<void> {
+    payload.perfil = 'ADMIN';
+    return this.http.post<UsuarioResponse>(this.url+'auth/register', payload).pipe(
+      tap((res) => {
+        payload.email = res.email;
+        payload.senha = res.senha;
+        this.login(payload);
+      }),
+      map(() => void 0),
+      catchError(this.handleError)
+        );
+  }
+
   /** Salva token (localStorage) */
   private saveToken(token: string) {
     try {
       localStorage.setItem(this.tokenKey, token);
     } catch (err) {
-      // localStorage pode falhar em modos privados / quotas — capture para debug.
       console.error('Erro ao salvar token no localStorage', err);
     }
   }
 
-  /** Retorna token atual (ou null) */
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
-  /** Remove token (logout local) */
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    // você pode também querer redirecionar para a rota de login no componente que chama logout
   }
 
-  /** Indica se há token salvo (simples verificação). Para validação mais robusta, decodifique/valide expiry. */
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
 
   /** Erro padrão para requisições de autenticação */
   private handleError(error: HttpErrorResponse) {
-    // Normaliza mensagens de erro para o componente que vai exibir
     let message = 'Erro desconhecido.';
 
     if (error.error && typeof error.error === 'string') {
-      // alguns backends retornam string
       message = error.error;
     } else if (error.error && error.error.message) {
       message = error.error.message;
@@ -81,11 +83,9 @@ export class AuthUserApi {
       message = 'Erro no servidor. Tente novamente mais tarde.';
     }
 
-    // Retorna um Observable de erro com a mensagem legível
     return throwError(() => new Error(message));
   }
 
-  /** ✅ Decodifica o token JWT e retorna os dados do usuário */
   getUserFromToken(): any | null {
     const token = this.getToken();
     if (!token) return null;
@@ -99,7 +99,6 @@ export class AuthUserApi {
     }
   }
 
-  /** ✅ Retorna o nome do usuário logado (se existir no token) */
   getUsername(): string {
     const user = this.getUserFromToken();
     return user?.name || user?.username || '';

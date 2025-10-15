@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms'; // <-- importar aqui
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { PropriedadeService } from 'src/app/core/services/propriedade/propriedade-service';
 import { EstadoEnum } from 'src/app/models/estado.enum';

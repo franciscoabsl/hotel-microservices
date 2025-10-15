@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthUserApi } from '../services/auth-user/auth-user-api';
+import { UsuarioService } from '../services/usuario/usuario-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthUserApi, private router: Router) {}
+  constructor(private authService: UsuarioService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -17,8 +17,9 @@ export class AuthGuard implements CanActivate {
 
     const isLoggedIn = this.authService.isLoggedIn(); // Verifica se o usuário está logado
     const tryingToAccessLogin = state.url === '/login'; // Verifica se o usuário está tentando acessar login
+    const tryingToAccessRegister = state.url === '/register'; // Verifica se o usuário está tentando acessar login
 
-    if (!isLoggedIn && !tryingToAccessLogin) {
+    if (!isLoggedIn && !tryingToAccessLogin && !tryingToAccessRegister) {
       // Usuário não logado tentando acessar qualquer rota que não seja login → redireciona para login
       return this.router.createUrlTree(['/login']);
     }
