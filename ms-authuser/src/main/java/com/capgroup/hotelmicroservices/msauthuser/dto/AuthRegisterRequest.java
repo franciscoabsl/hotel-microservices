@@ -16,7 +16,6 @@
 
             @NotBlank(message = "Senha é obrigatória")
             @Size(min = 6, max = 100, message = "Senha deve ter entre 6 e 100 caracteres") String senha,
-
             @NotNull(message = "Perfil é obrigatório") Perfil perfil,
 
             @Size(max = 20, message = "Telefone deve ter no máximo 20 caracteres") String telefone

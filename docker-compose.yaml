@@ -119,6 +119,19 @@ services:
     networks:
       - hotel_network
 
+  # FRONTEDN
+  frontend:
+    image: checkin-frontend:latest
+    build:
+      context: ./frontend/checkin-com   # caminho para a pasta do seu frontend
+      dockerfile: Dockerfile
+    container_name: checkin-frontend
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+    networks:
+      - hotel_network
+
   # MS-NOTIFICACAO
   ms-notificacao:
     build:

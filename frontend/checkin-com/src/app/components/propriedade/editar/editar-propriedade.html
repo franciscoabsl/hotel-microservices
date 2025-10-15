@@ -1,0 +1,62 @@
+<div class="container mt-4">
+  <h3 class="mb-4 text-center">Editar Propriedade</h3>
+  <form [formGroup]="formulario" (ngSubmit)="salvar()">
+    <div class="row">
+      <div class="col mb-3">
+        <label for="nome" class="form-label">Nome da Propriedade</label>
+        <input id="nome" type="text" class="form-control" formControlName="nome" />
+      </div>
+      <div class="col mb-3">
+        <label for="tipo" class="form-label">Tipo</label>
+        <select id="tipo" class="form-select" formControlName="tipo">
+          <option value="" disabled>Selecione um tipo</option>
+          <option *ngFor="let tipo of tipos" [value]="tipo.sigla">
+            {{ tipo.nome }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="descricao" class="form-label">Descrição</label>
+      <textarea id="descricao" class="form-control" rows="3" formControlName="descricao"></textarea>
+    </div>
+
+    <div formGroupName="endereco">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="rua" class="form-label">Rua</label>
+          <input id="rua" type="text" class="form-control" formControlName="rua" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="bairro" class="form-label">Bairro</label>
+          <input id="bairro" type="text" class="form-control" formControlName="bairro" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="cidade" class="form-label">Cidade</label>
+          <input id="cidade" type="text" class="form-control" formControlName="cidade" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="estado" class="form-label">Estado</label>
+          <select id="estado" class="form-select" formControlName="estado">
+            <option value="" disabled>Selecione um estado</option>
+            <option *ngFor="let estado of estados" [value]="estado.sigla">
+              {{ estado.nome }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="!formulario.valid">
+      Salvar
+    </button>
+    <button type="button" (click)="cancelar()" class="btn btn-danger mx-2">
+      Cancelar
+    </button>
+  </form>
+</div>
