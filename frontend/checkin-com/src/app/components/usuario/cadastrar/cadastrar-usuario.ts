@@ -3,7 +3,7 @@ import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthUserApi } from 'src/app/core/services/auth-user/auth-user-api';
+import { UsuarioService } from 'src/app/core/services/usuario/usuario-service';
 
 @Component({
   selector: 'app-cadastrar-usuario',
@@ -17,7 +17,7 @@ export class CadastrarUsuario {
 
   constructor(
     private fb: FormBuilder,
-    private authUserService: AuthUserApi,
+    private usuarioService: UsuarioService,
     private router: Router
   ) {}
 
@@ -33,7 +33,7 @@ export class CadastrarUsuario {
 
   salvar(){
     if (this.formulario.valid) {
-      this.authUserService.register(this.formulario.value).subscribe({
+      this.usuarioService.register(this.formulario.value).subscribe({
         next: (res: any) => {
           this.router.navigate(['login']);
         },

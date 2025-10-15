@@ -3,37 +3,17 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-
-export interface LoginPayload {
-  email: string;
-  senha: string;
-}
-
-export interface UsuarioPayload {
-  nome: string;
-  email: string;
-  cpf: string;
-  senha: string;
-  perfil: string;
-}
-
-export interface UsuarioResponse {
-  id: string;
-  nome: string;
-  email: string;
-  cpf: string;
-  senha: string;
-  perfil: string;
-}
-
-export interface LoginResponse {
-  token: string;
-}
+import {
+  LoginPayload,
+  LoginResponse,
+  UsuarioPayload,
+  UsuarioResponse
+  } from 'src/app/models/usuario';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthUserApi {
+export class UsuarioService {
   private url = environment.apiUrl;
   private tokenKey = 'auth_token';
 
@@ -86,8 +66,6 @@ export class AuthUserApi {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
-
-
 
   /** Erro padrão para requisições de autenticação */
   private handleError(error: HttpErrorResponse) {

@@ -9,14 +9,14 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { AuthUserApi } from '../services/auth-user/auth-user-api';
+import { UsuarioService } from '../services/usuario/usuario-service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authUserApi: AuthUserApi, private router: Router) {}
+  constructor(private usuarioService: UsuarioService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.authUserApi.getToken();
+    const token = this.usuarioService.getToken();
 
     // Clone request e adiciona header Authorization se houver token
     let authReq = req;
@@ -33,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((err: unknown) => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
-            this.authUserApi.logout();
+            this.usuarioService.logout();
             const returnUrl = this.router.url;
            this.router.navigate(['/login'], { queryParams: { returnUrl } });
           }

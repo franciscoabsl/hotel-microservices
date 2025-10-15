@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthUserApi } from 'src/app/core/services/auth-user/auth-user-api';
+import { UsuarioService } from 'src/app/core/services/usuario/usuario-service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class Login implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authUserApi: AuthUserApi,
+    private usuarioService: UsuarioService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -34,7 +34,7 @@ export class Login implements OnInit {
     this.loading = true;
     this.errorMessage = null;
 
-    this.authUserApi.login(this.formulario.value).subscribe({
+    this.usuarioService.login(this.formulario.value).subscribe({
       next: () => {
         this.loading = false;
         this.router.navigate(['home']);

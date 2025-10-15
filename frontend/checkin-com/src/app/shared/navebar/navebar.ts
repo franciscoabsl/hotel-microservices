@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AuthUserApi } from 'src/app/core/services/auth-user/auth-user-api';
+import { UsuarioService } from 'src/app/core/services/usuario/usuario-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -13,22 +13,22 @@ import { CommonModule } from '@angular/common';
 export class Navebar  implements OnInit {
   username = '';
 
-  constructor(private auth: AuthUserApi, private router: Router) {}
+  constructor(private usuarioService: UsuarioService, private router: Router) {}
 
   ngOnInit(): void {
-    const user = this.auth.getUserFromToken();
+    const user = this.usuarioService.getUserFromToken();
 
     if(user === null) this.logout();
     this.username = user?.name || user?.userName || '';
   }
 
   logout(): void {
-    this.auth.logout();
+    this.usuarioService.logout();
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return this.auth.isLoggedIn();
+    return this.usuarioService.isLoggedIn();
   }
 
 }
